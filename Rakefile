@@ -34,7 +34,7 @@ task :deploy, [:revision] do |_, args|
   unless `git status -s | wc -l`.strip.to_i.zero?
     system %{
       git add .
-      git commit -m '[UPDATE] - #{current_month} #{current_day}, #{current_year} at #{current_time}'
+      git commit -m '[UPDATE] - #{current_update_time}'
       git push
     }
     abort "auto add and commit failed" if $?.exitstatus != 0
