@@ -2,7 +2,7 @@ require 'time'
 
 AVAILABLE_REVISIONS = %w[major minor patch].freeze
 
-# task :default => [:deploy]
+task :default => [:run_server]
 
 task :command_exists, [:command] do |_, args|
   abort "#{args.command} doesn't exists" if `command -v #{args.command} > /dev/null 2>&1 && echo $?`.chomp.empty?
@@ -20,6 +20,23 @@ task :bump, [:revision] => [:has_bumpversion] do |_, args|
 
   system "bumpversion #{args.revision}"
 end
+
+
+desc "run server"
+task :run_server, [:port] do |_, args|
+  args.with_defaults(port: 9000)
+  
+  begin
+    port = Integer(args.port)
+  rescue ArgumentError
+    abort "port value should be integer"
+  end
+
+  system %{
+    python -m http.server #{port}
+  }
+end
+
 
 desc "deploy"
 task :deploy, [:revision] do |_, args|
